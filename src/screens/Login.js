@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ModalRegister from './ModalRegister'; // Importar el componente ModalRegister
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showRegisterModal, setShowRegisterModal] = useState(false); // Estado para mostrar el modal de registro
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Hacer la solicitud a la función serverless con los datos del usuario
     try {
       const response = await fetch('/.netlify/functions/getData', {
         method: 'POST',
@@ -21,16 +22,21 @@ const Login = () => {
       const data = await response.json();
 
       if (!data.success) {
-        throw new Error(data.message); // Si las credenciales son incorrectas
+        throw new Error(data.message);
       }
 
-      // Si la autenticación es exitosa, redirigir a la página de usuarios
       console.log('Usuarios:', data.users);
-      navigate('/home', { state: { users: data.users } }); // Pasar los usuarios como estado
+      navigate('/home', { state: { users: data.users } });
     } catch (error) {
-      setError(error.message); // Manejar el error
+      setError(error.message);
       console.error(error);
     }
+  };
+
+  const handleRegister = (user) => {
+    // Puedes redirigir o actualizar el estado si es necesario
+    console.log('Usuario registrado:', user);
+    // Aquí puedes agregar lógica después de que el usuario se registre exitosamente
   };
 
   return (
@@ -66,12 +72,27 @@ const Login = () => {
                   />
                 </div>
                 <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
-                {error && <div className="mt-3 text-danger">{error}</div>} {/* Mostrar error */}
+                {error && <div className="mt-3 text-danger">{error}</div>}
               </form>
+              <div className="mt-3 text-center">
+                <button
+                  className="btn btn-link"
+                  onClick={() => setShowRegisterModal(true)} // Mostrar el modal de registro
+                >
+                  ¿No tienes una cuenta? Regístrate aquí
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modal de registro */}
+      <ModalRegister
+        showModal={showRegisterModal}
+        handleClose={() => setShowRegisterModal(false)} // Cerrar el modal
+        handleRegister={handleRegister} // Manejar el registro
+      />
     </div>
   );
 };

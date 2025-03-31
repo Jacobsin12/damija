@@ -8,7 +8,7 @@ exports.handler = async function(event, context) {
   await client.connect();
 
   try {
-    const result = await client.query('SELECT * FROM your_table');
+    const result = await client.query('SELECT * FROM usuarios');
     return {
       statusCode: 200,
       body: JSON.stringify(result.rows),

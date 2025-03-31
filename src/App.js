@@ -11,7 +11,7 @@ function App() {
         <Route path="/" element={<Login />} />  {/* Cambié la ruta raíz a Login */}
 
         {/* Ruta para el Home, que se cargará después de un login exitoso */}
-        <Route path="/home" element={<Home />} />
+        <Route path="home" element={<Home />} />
       </Routes>
     </Router>
   );

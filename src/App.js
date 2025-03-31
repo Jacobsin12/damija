@@ -1,20 +1,31 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './bootstrap.css';  // Asegúrate de que la ruta sea correcta
-import Login from './screens/Login';  // Asegúrate de que este componente exista
-import Home from './screens/Home';    // Asegúrate de que este componente exista
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import './bootstrap.css';  
+import Login from './screens/Login';
+import Home from './screens/Home';
 import ModalRegister from './components/ModalRegister';
+import NotFound from './screens/NotFound';
+
+// Simulación de autenticación (puedes reemplazarlo con un contexto o Redux)
+const isAuthenticated = false;  // Cambia esto para simular el inicio de sesión
+
+// Componente para rutas protegidas
+const PrivateRoute = ({ element }) => {
+  return isAuthenticated ? element : <Navigate to="/" />;
+};
 
 function App() {
   return (
-    <Router>  {/* Usamos Router para envolver nuestras rutas */}
+    <Router>
       <Routes>
-        {/* Ruta principal para el Login */}
-        <Route path="/" element={<Login />} />  {/* Cambié la ruta raíz a Login */}
-
-        {/* Ruta para el Home, que se cargará después de un login exitoso */}
-        <Route path="home" element={<Home />} />
-        <Route path="ModalRegister" element={<ModalRegister />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/ModalRegister" element={<ModalRegister />} />
+        
+        {/* Ruta protegida para Home */}
+        <Route path="/home" element={<PrivateRoute element={<Home />} />} />
+        
+        {/* Página 404 para rutas no existentes */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

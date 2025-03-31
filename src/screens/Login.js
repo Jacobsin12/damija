@@ -4,32 +4,33 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // Para manejar errores
-  const navigate = useNavigate(); // Usar useNavigate para redirigir
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Realiza la solicitud a la función serverless para obtener los datos o validar el usuario
-    fetch('/.netlify/functions/getData')  // Asegúrate de que la ruta sea correcta
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error al obtener los datos');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Datos obtenidos:', data);  // Puedes usar los datos obtenidos como quieras
-
-        // Aquí agregas tu lógica de autenticación, como verificar email y password
-
-        // Si la autenticación es exitosa, redirige a la página de inicio
-        navigate('/home');
-      })
-      .catch((error) => {
-        setError(error.message); // Si ocurre un error, lo mostramos
-        console.error(error);
+    // Hacer la solicitud a la función serverless con los datos del usuario
+    try {
+      const response = await fetch('/.netlify/functions/getData', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message); // Si las credenciales son incorrectas
+      }
+
+      // Si la autenticación es exitosa, redirigir a la página de usuarios
+      console.log('Usuarios:', data.users);
+      navigate('/home', { state: { users: data.users } }); // Pasar los usuarios como estado
+    } catch (error) {
+      setError(error.message); // Manejar el error
+      console.error(error);
+    }
   };
 
   return (
@@ -65,7 +66,7 @@ const Login = () => {
                   />
                 </div>
                 <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
-                {error && <div className="mt-3 text-danger">{error}</div>} {/* Muestra error si lo hay */}
+                {error && <div className="mt-3 text-danger">{error}</div>} {/* Mostrar error */}
               </form>
             </div>
           </div>

@@ -18,13 +18,21 @@ const Home = () => {
       setUsers([JSON.parse(user)]); // Si está autenticado, obtener el usuario desde localStorage
 
       // Obtener todos los usuarios desde la API
-      fetch('/.netlify/functions/getUsers')  // Suponiendo que esta es tu API
-        .then(response => response.json())
+      fetch('/.netlify/functions/getdata')  // Suponiendo que esta es tu API
+        .then(response => {
+          if (!response.ok) {
+            // Si la respuesta no es 2xx, lanzar error
+            throw new Error('Network response was not ok');
+          }
+          return response.json();  // Intentamos parsear como JSON
+        })
         .then(data => {
+          console.log('Usuarios obtenidos:', data);  // Verifica la respuesta en la consola
           setUsers(data.users); // Aquí actualizas el estado con todos los usuarios
         })
         .catch(error => {
           console.error("Error fetching users:", error);
+          setError('Error al obtener los usuarios. Intenta de nuevo más tarde.');
         });
     }
   }, [navigate]);
@@ -58,6 +66,8 @@ const Home = () => {
       <Button variant="danger" onClick={handleLogout} className="mb-3">
         Cerrar Sesión
       </Button>
+
+      {error && <div className="text-danger mb-3">{error}</div>} {/* Mostrar error si hay */}
 
       {users.length > 0 ? (
         <ListGroup>

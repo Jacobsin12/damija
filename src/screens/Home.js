@@ -15,7 +15,17 @@ const Home = () => {
     if (!user) {
       navigate('/'); // Redirigir al login si no hay usuario autenticado
     } else {
-      setUsers([JSON.parse(user)]); // Si está autenticado, obtener los datos del usuario
+      setUsers([JSON.parse(user)]); // Si está autenticado, obtener el usuario desde localStorage
+
+      // Obtener todos los usuarios desde la API
+      fetch('/.netlify/functions/getUsers')  // Suponiendo que esta es tu API
+        .then(response => response.json())
+        .then(data => {
+          setUsers(data.users); // Aquí actualizas el estado con todos los usuarios
+        })
+        .catch(error => {
+          console.error("Error fetching users:", error);
+        });
     }
   }, [navigate]);
 
@@ -49,7 +59,7 @@ const Home = () => {
         Cerrar Sesión
       </Button>
 
-      {users ? (
+      {users.length > 0 ? (
         <ListGroup>
           {users.map((user) => (
             <ListGroup.Item key={user.id} className="d-flex justify-content-between align-items-center">

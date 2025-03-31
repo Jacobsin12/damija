@@ -24,7 +24,7 @@ exports.handler = async function(event, context) {
     const { email, password, name, action } = JSON.parse(event.body);
 
     // Si la acción es "register", insertar el nuevo usuario
-    if (action === 'register') {
+    if (action === 'registeruser') {
       // Validar que los campos no estén vacíos
       if (!email || !password || !name) {
         return {

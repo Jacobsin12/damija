@@ -13,13 +13,17 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
   };
 
   const validatePassword = (password) => {
+    // Al menos 8 caracteres, una mayúscula, un número y un carácter especial
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(''); // Limpiar errores previos
     
+    console.log("Correo:", email, "Contraseña:", password); // Para depuración
+
     if (!name || !email || !password) {
       setError('Todos los campos son obligatorios');
       return;

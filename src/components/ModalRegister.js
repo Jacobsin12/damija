@@ -18,24 +18,26 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
 
     // Realizar la solicitud para registrar al usuario
     try {
-      const response = await fetch('/.netlify/functions/registerUser', { // Aquí va la ruta de la función serverless para el registro
+      const response = await fetch('/.netlify/functions/registerUser', { // Ruta de la función serverless para el registro
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, action: 'register' }),
+        body: JSON.stringify({ name, email, password, action: 'register' }), // Acción para registrar
       });
 
       const data = await response.json();
 
+      // Verificar la respuesta
       if (!data.success) {
-        throw new Error(data.message);
+        throw new Error(data.message); // Si la respuesta no es exitosa, lanzar un error
       }
 
-      // Llamar la función handleRegister para actualizar el estado
+      // Llamar la función handleRegister para actualizar el estado de la aplicación
       handleRegister(data.user); // Pasar el usuario registrado a la función handleRegister (puedes redirigir o hacer lo que desees)
       handleClose(); // Cerrar el modal
+
     } catch (error) {
       setError(error.message || 'Ocurrió un error al registrar el usuario.');
-      console.error(error);
+      console.error(error); // Enviar el error al console para depuración
     }
   };
 
@@ -76,7 +78,7 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
               required
             />
           </Form.Group>
-          {error && <div className="text-danger mt-2">{error}</div>}
+          {error && <div className="text-danger mt-2">{error}</div>} {/* Mostrar el error si lo hay */}
           <Button variant="primary" type="submit" className="mt-3">
             Registrarse
           </Button>

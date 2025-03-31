@@ -21,7 +21,7 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
       const response = await fetch('/.netlify/functions/registerUser', { // Aquí va la ruta de la función serverless para el registro
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, action: 'register' }),
       });
 
       const data = await response.json();
@@ -34,7 +34,7 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
       handleRegister(data.user); // Pasar el usuario registrado a la función handleRegister (puedes redirigir o hacer lo que desees)
       handleClose(); // Cerrar el modal
     } catch (error) {
-      setError(error.message);
+      setError(error.message || 'Ocurrió un error al registrar el usuario.');
       console.error(error);
     }
   };

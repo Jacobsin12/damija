@@ -1,75 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Button, ListGroup, Modal, Form } from 'react-bootstrap';
 
 const Home = () => {
-  const navigate = useNavigate();
-  const [users, setUsers] = useState([]);
+  const location = useLocation();
+  const { users } = location.state || {}; // Recibir los usuarios desde el navigate
+
   const [showAddModal, setShowAddModal] = useState(false);
   const [newUser, setNewUser] = useState({ nombre: '', correo: '' });
   const [error, setError] = useState('');
 
-  // Verificar si el usuario está autenticado al cargar la página
-  useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (!user) {
-      navigate('/'); // Redirigir al login si no hay usuario autenticado
-    } else {
-      setUsers([JSON.parse(user)]); // Si está autenticado, obtener el usuario desde localStorage
-
-      // Obtener todos los usuarios desde la API
-      fetch('/.netlify/functions/getdata')  // Suponiendo que esta es tu API
-        .then(response => {
-          if (!response.ok) {
-            // Si la respuesta no es 2xx, lanzar error
-            throw new Error('Network response was not ok');
-          }
-          return response.json();  // Intentamos parsear como JSON
-        })
-        .then(data => {
-          console.log('Usuarios obtenidos:', data);  // Verifica la respuesta en la consola
-          setUsers(data.users); // Aquí actualizas el estado con todos los usuarios
-        })
-        .catch(error => {
-          console.error("Error fetching users:", error);
-          setError('Error al obtener los usuarios. Intenta de nuevo más tarde.');
-        });
-    }
-  }, [navigate]);
-
+  // Función para manejar el agregar usuario
   const handleAddUser = () => {
     if (!newUser.nombre || !newUser.correo) {
       setError('Todos los campos son obligatorios');
       return;
     }
+    // Lógica para agregar el usuario a la lista
+    // Por ejemplo, actualizar el estado de usuarios (si fuera un estado de backend)
     console.log('Nuevo usuario agregado:', newUser);
     setShowAddModal(false);
     setNewUser({ nombre: '', correo: '' });
   };
 
+  // Función para eliminar un usuario
   const handleDeleteUser = (userId) => {
+    // Lógica para eliminar al usuario (actualización en el backend o estado)
     console.log('Eliminar usuario con id:', userId);
   };
 
+  // Función para editar un usuario
   const handleEditUser = (userId) => {
+    // Lógica para editar el usuario (actualización en el backend o estado)
     console.log('Editar usuario con id:', userId);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('user'); // Eliminar el usuario del localStorage
-    navigate('/'); // Redirigir al login
   };
 
   return (
     <div className="container mt-5">
       <h4>Usuarios Registrados</h4>
-      <Button variant="danger" onClick={handleLogout} className="mb-3">
-        Cerrar Sesión
-      </Button>
 
-      {error && <div className="text-danger mb-3">{error}</div>} {/* Mostrar error si hay */}
-
-      {users.length > 0 ? (
+      {/* Lista de usuarios */}
+      {users ? (
         <ListGroup>
           {users.map((user) => (
             <ListGroup.Item key={user.id} className="d-flex justify-content-between align-items-center">
@@ -98,12 +69,14 @@ const Home = () => {
         <p>No hay usuarios disponibles.</p>
       )}
 
+      {/* Botón para agregar un nuevo usuario */}
       <div className="mt-3">
         <Button variant="success" onClick={() => setShowAddModal(true)}>
           Agregar Usuario
         </Button>
       </div>
 
+      {/* Modal para agregar un nuevo usuario */}
       <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Agregar Nuevo Usuario</Modal.Title>

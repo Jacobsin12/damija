@@ -18,8 +18,8 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      // Usamos la variable de entorno REACT_APP_BACKEND_URL para obtener la URL del backend
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';  // Para desarrollo local
+      // Aquí ponemos directamente la URL de Heroku
+      const backendUrl = 'https://damija-7623a9162735.herokuapp.com/'; // Cambia por tu URL de Heroku
 
       // Hacemos la solicitud al backend para verificar las credenciales
       const response = await axios.post(`${backendUrl}/login`, {
@@ -33,7 +33,7 @@ const LoginPage = () => {
       }
     } catch (err) {
       // Si ocurre un error, mostramos el mensaje de error
-      setError(err.response.data.message || 'Error al iniciar sesión');
+      setError(err.response?.data?.message || 'Error al iniciar sesión');
     }
   };
 

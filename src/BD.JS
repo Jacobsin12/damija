@@ -1,53 +1,39 @@
-const express = require('express');  // Asegúrate de importar Express
+const express = require('express');
+const cors = require('cors');
 const { Client } = require('pg');
-const cors = require('cors');  // Si no lo has hecho ya, instala e importa CORS
-require('dotenv').config();  // Para cargar las variables de entorno
+require('dotenv').config();
 
-const app = express();  // Aquí inicializas tu app de Express
+const app = express();
 
-// Middleware para parsear el JSON
-app.use(express.json());
-
-// Configuración de CORS para permitir solicitudes desde Netlify
-const allowedOrigins = ['https://damija.netlify.app'];  // Cambia esto por tu dominio de Netlify
-
+// 🛠️ CONFIGURACIÓN CORRECTA DE CORS 🛠️
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true); // Si la solicitud proviene del dominio permitido
-    } else {
-      callback(new Error('No permitido por CORS')); // Si no, rechaza la solicitud
-    }
-  },
+  origin: ['http://localhost:3000', 'https://damija.netlify.app'], // Agrega los dominios permitidos
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization'
 }));
 
-// Configuración de la base de datos
+app.use(express.json());
+
+// Conexión con la base de datos
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: { rejectUnauthorized: false }
 });
-
-// Conectar a la base de datos
 client.connect();
 
-// Ruta para manejar el login
+// Ruta de Login
 app.post('/login', async (req, res) => {
-  const { email, password } = req.body;  // Recibimos el correo y la contraseña desde el frontend
+  const { email, password } = req.body;
 
   try {
-    // Consultar si existe un usuario con ese correo y contraseña
     const result = await client.query(
-      'SELECT * FROM usuarios WHERE correo = $1 AND contrasena = $2',  // Cambié "contraseña" por "contrasena"
+      'SELECT * FROM usuarios WHERE correo = $1 AND contrasena = $2',
       [email, password]
     );
 
     if (result.rows.length > 0) {
-      // Si encontramos el usuario, devolvemos un mensaje de éxito
       res.status(200).json({ message: 'Login exitoso', user: result.rows[0] });
     } else {
-      // Si no, devolvemos un error
       res.status(401).json({ message: 'Credenciales incorrectas' });
     }
   } catch (err) {
@@ -56,8 +42,8 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Puerto en el que la API escucha
+// Iniciar el servidor
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto ${PORT}`);
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

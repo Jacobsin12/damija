@@ -1,38 +1,25 @@
-// Importamos el cliente de PostgreSQL
 const { Client } = require('pg');
 
-// Conexión a la base de datos de Heroku usando la URL proporcionada
-const connectionString = process.env.DATABASE_URL || 'postgres://uflr1o25h28aih:p826d7977c98e2dd620019614cb7604cc882d49fc3489f4d2ffe2875b354fdc90@c1i13pt05ja4ag.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/da3sjnnk6tqagv';
+exports.handler = async function(event, context) {
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL, // Asegúrate de tener la URL en las variables de entorno
+  });
 
-const client = new Client({
-  connectionString: connectionString,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+  await client.connect();
 
-exports.handler = async (event, context) => {
   try {
-    // Conectar a la base de datos
-    await client.connect();
-
-    // Realizar una consulta (cambiar la consulta según lo que necesites)
-    const res = await client.query('SELECT * usuarios'); // Cambia 'your_table_name' por tu nombre de tabla real
-
-    // Retornar los resultados de la consulta
+    const result = await client.query('SELECT * FROM your_table');
     return {
       statusCode: 200,
-      body: JSON.stringify(res.rows),  // Devolver los datos como JSON
+      body: JSON.stringify(result.rows),
     };
-  } catch (err) {
-    console.error(err);
-    // Si hay un error, retornar el error
+  } catch (error) {
+    console.error('Error al obtener los datos:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Error fetching data' }),
+      body: JSON.stringify({ message: 'Error al obtener los datos' }),
     };
   } finally {
-    // Cerrar la conexión
     await client.end();
   }
 };

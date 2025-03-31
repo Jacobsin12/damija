@@ -5,8 +5,8 @@ import { Button, ListGroup, Modal, Form } from 'react-bootstrap';
 const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [users, setUsers] = useState([]);
-  const { users: locationUsers } = location.state || {}; // Recibir los usuarios desde el navigate
+  const { users } = location.state || {}; // Recibir los usuarios desde el navigate
+
   const [showAddModal, setShowAddModal] = useState(false);
   const [newUser, setNewUser] = useState({ nombre: '', correo: '' });
   const [error, setError] = useState('');
@@ -19,32 +19,20 @@ const Home = () => {
     }
   }, [navigate]);
 
-  // Escuchar cambios en el localStorage y actualizar el estado de los usuarios
-  useEffect(() => {
-    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-    setUsers(storedUsers);
-  }, []);
-
   // Función para manejar el agregar usuario
   const handleAddUser = () => {
     if (!newUser.nombre || !newUser.correo) {
       setError('Todos los campos son obligatorios');
       return;
     }
-
-    const updatedUsers = [...users, newUser];
-    setUsers(updatedUsers);
-    localStorage.setItem('users', JSON.stringify(updatedUsers)); // Actualiza los usuarios en localStorage
-
+    console.log('Nuevo usuario agregado:', newUser);
     setShowAddModal(false);
     setNewUser({ nombre: '', correo: '' });
   };
 
   // Función para eliminar un usuario
   const handleDeleteUser = (userId) => {
-    const updatedUsers = users.filter(user => user.id !== userId);
-    setUsers(updatedUsers);
-    localStorage.setItem('users', JSON.stringify(updatedUsers)); // Actualiza los usuarios en localStorage
+    console.log('Eliminar usuario con id:', userId);
   };
 
   // Función para editar un usuario
@@ -68,7 +56,7 @@ const Home = () => {
       </Button>
 
       {/* Lista de usuarios */}
-      {users.length > 0 ? (
+      {users ? (
         <ListGroup>
           {users.map((user) => (
             <ListGroup.Item key={user.id} className="d-flex justify-content-between align-items-center">

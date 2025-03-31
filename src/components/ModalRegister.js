@@ -18,7 +18,7 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
 
     // Realizar la solicitud para registrar al usuario
     try {
-      const response = await fetch('/.netlify/functions/registerUser', { // Ruta de la función serverless para el registro
+      const response = await fetch('/.netlify/functions/getData/registerUser', { // Ruta de la función serverless para el registro
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password, action: 'register' }), // Acción para registrar

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ModalRegister from './ModalRegister'; // Importar el componente ModalRegister
+import ModalRegister from '../components/ModalRegister'; // Importar el componente ModalRegister
 
 const Login = () => {
   const [email, setEmail] = useState('');

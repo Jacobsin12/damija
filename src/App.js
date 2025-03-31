@@ -22,7 +22,7 @@ function App() {
         <Route path="/ModalRegister" element={<ModalRegister />} />
         
         {/* Ruta protegida para Home */}
-        <Route path="/home" element={<PrivateRoute element={<Home />} />} />
+        <Route path="home" element={<PrivateRoute element={<Home />} />} />
         
         {/* Página 404 para rutas no existentes */}
         <Route path="*" element={<NotFound />} />

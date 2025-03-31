@@ -14,7 +14,7 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
 
   const validatePassword = (password) => {
     // Al menos 8 caracteres, una mayúscula, un número y un carácter especial
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{16,}$/;
     return passwordRegex.test(password);
   };
 

@@ -1,26 +1,40 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import './bootstrap.css'; // Importa tu archivo bootstrap.css
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'; // Importar React Router
+import './bootstrap.css';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Importa axios para hacer solicitudes HTTP
 import reportWebVitals from './reportWebVitals';
 
-// Importar tus componentes
+import Home from './screens/Home';
 
-import Home from './screens/Home'; // Suponiendo que tu Home está en screens
-
-// Componente Login
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Usar useNavigate para redirigir
+  const [error, setError] = useState('');  // Para mostrar errores de login
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí puedes agregar la lógica de autenticación
 
-    // Redirigir a la página de inicio después de hacer login
-    navigate('/home');
+    try {
+      // Usamos la variable de entorno REACT_APP_BACKEND_URL para obtener la URL del backend
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';  // Para desarrollo local
+
+      // Hacemos la solicitud al backend para verificar las credenciales
+      const response = await axios.post(`${backendUrl}/login`, {
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        // Si el login es exitoso, redirigimos al Home
+        navigate('/home');
+      }
+    } catch (err) {
+      // Si ocurre un error, mostramos el mensaje de error
+      setError(err.response.data.message || 'Error al iniciar sesión');
+    }
   };
 
   return (
@@ -57,6 +71,7 @@ const LoginPage = () => {
                 </div>
                 <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
               </form>
+              {error && <div className="alert alert-danger mt-3">{error}</div>} {/* Mostrar el error */}
             </div>
           </div>
         </div>
@@ -65,13 +80,12 @@ const LoginPage = () => {
   );
 };
 
-// Componente App (Definir las rutas)
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} /> {/* Ruta para Login */}
-        <Route path="/home" element={<Home />} /> {/* Ruta para Home */}
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </Router>
   );
@@ -84,7 +98,4 @@ root.render(
   </React.StrictMode>
 );
 
-// Si quieres empezar a medir el rendimiento en tu app, puedes pasar una función
-// para registrar los resultados (por ejemplo: reportWebVitals(console.log))
-// o enviarlos a un endpoint de análisis. Aprende más: https://bit.ly/CRA-vitals
 reportWebVitals();

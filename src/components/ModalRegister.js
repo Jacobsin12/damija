@@ -19,7 +19,7 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
       (password.length >= 8) +
       /[A-Z]/.test(password) +
       /\d/.test(password) +
-      /[@$!%*?&]/.test(password);
+      /[^\w]/.test(password); 
     setPasswordStrength(strength * 25);
     return strength === 4;
   };

@@ -78,7 +78,7 @@ const Home = () => {
           )}
 
           {/* Botón para agregar un nuevo usuario */}
-          <div className="mt-3 text-center">
+          <div className="d-flex justify-content-between flex-wrap mb-3r">
             <Button variant="success" onClick={() => setShowAddModal(true)}>
               Agregar Usuario
             </Button>

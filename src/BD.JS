@@ -7,7 +7,19 @@ const app = express();  // Aquí inicializas tu app de Express
 
 // Middleware para parsear el JSON
 app.use(express.json());
-app.use(cors());  // Permite las solicitudes de otros orígenes (CORS)
+
+// Configuración de CORS para permitir solicitudes desde Netlify
+const allowedOrigins = ['https://damija.netlify.app'];  // Cambia esto por tu dominio de Netlify
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true); // Si la solicitud proviene del dominio permitido
+    } else {
+      callback(new Error('No permitido por CORS')); // Si no, rechaza la solicitud
+    }
+  },
+}));
 
 // Configuración de la base de datos
 const client = new Client({

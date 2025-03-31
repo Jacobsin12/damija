@@ -56,7 +56,7 @@ const Home = () => {
       </Button>
 
       {/* Lista de usuarios */}
-      {users ? (
+      {users && users.length > 0 ? (
         <ListGroup>
           {users.map((user) => (
             <ListGroup.Item key={user.id} className="d-flex justify-content-between align-items-center">

@@ -7,37 +7,50 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validar campos antes de enviar
+    
     if (!name || !email || !password) {
       setError('Todos los campos son obligatorios');
       return;
     }
+    if (!validateEmail(email)) {
+      setError('Ingrese un correo electrónico válido');
+      return;
+    }
+    if (!validatePassword(password)) {
+      setError('La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial');
+      return;
+    }
 
-    // Realizar la solicitud para registrar al usuario
     try {
-      const response = await fetch('/.netlify/functions/getData', { // Ruta de la función serverless para el registro
+      const response = await fetch('/.netlify/functions/getData', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, action: 'registerUser' }), // Acción para registrar
+        body: JSON.stringify({ name, email, password, action: 'registerUser' }),
       });
 
       const data = await response.json();
 
-      // Verificar la respuesta
       if (!data.success) {
-        throw new Error(data.message); // Si la respuesta no es exitosa, lanzar un error
+        throw new Error(data.message);
       }
 
-      // Llamar la función handleRegister para actualizar el estado de la aplicación
-      handleRegister(data.user); // Pasar el usuario registrado a la función handleRegister (puedes redirigir o hacer lo que desees)
-      handleClose(); // Cerrar el modal
-
+      handleRegister(data.user);
+      handleClose();
     } catch (error) {
       setError(error.message || 'Ocurrió un error al registrar el usuario.');
-      console.error(error); // Enviar el error al console para depuración
+      console.error(error);
     }
   };
 
@@ -78,7 +91,7 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
               required
             />
           </Form.Group>
-          {error && <div className="text-danger mt-2">{error}</div>} {/* Mostrar el error si lo hay */}
+          {error && <div className="text-danger mt-2">{error}</div>}
           <Button variant="primary" type="submit" className="mt-3">
             Registrarse
           </Button>

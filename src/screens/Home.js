@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, ListGroup, Modal, Form } from 'react-bootstrap';
 
 const Home = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { users } = location.state || {}; // Recibir los usuarios desde el navigate
 
@@ -10,14 +11,20 @@ const Home = () => {
   const [newUser, setNewUser] = useState({ nombre: '', correo: '' });
   const [error, setError] = useState('');
 
+  // Comprobamos si el usuario está autenticado
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      navigate('/login'); // Si no está autenticado, redirige al login
+    }
+  }, [navigate]);
+
   // Función para manejar el agregar usuario
   const handleAddUser = () => {
     if (!newUser.nombre || !newUser.correo) {
       setError('Todos los campos son obligatorios');
       return;
     }
-    // Lógica para agregar el usuario a la lista
-    // Por ejemplo, actualizar el estado de usuarios (si fuera un estado de backend)
     console.log('Nuevo usuario agregado:', newUser);
     setShowAddModal(false);
     setNewUser({ nombre: '', correo: '' });
@@ -25,19 +32,28 @@ const Home = () => {
 
   // Función para eliminar un usuario
   const handleDeleteUser = (userId) => {
-    // Lógica para eliminar al usuario (actualización en el backend o estado)
     console.log('Eliminar usuario con id:', userId);
   };
 
   // Función para editar un usuario
   const handleEditUser = (userId) => {
-    // Lógica para editar el usuario (actualización en el backend o estado)
     console.log('Editar usuario con id:', userId);
+  };
+
+  // Función para cerrar sesión
+  const handleLogout = () => {
+    localStorage.removeItem('user'); // Eliminar el usuario del localStorage
+    navigate('/login'); // Redirigir al login
   };
 
   return (
     <div className="container mt-5">
       <h4>Usuarios Registrados</h4>
+
+      {/* Botón de cerrar sesión */}
+      <Button variant="danger" onClick={handleLogout} className="mb-3">
+        Cerrar Sesión
+      </Button>
 
       {/* Lista de usuarios */}
       {users ? (

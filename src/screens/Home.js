@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button, ListGroup, Modal, Form } from 'react-bootstrap';
+import { Button, ListGroup, Modal, Form, Container, Row, Col } from 'react-bootstrap';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -11,15 +11,13 @@ const Home = () => {
   const [newUser, setNewUser] = useState({ nombre: '', correo: '' });
   const [error, setError] = useState('');
 
-  // Comprobamos si el usuario está autenticado
   useEffect(() => {
     const user = localStorage.getItem('user');
     if (!user) {
-      navigate('/login'); // Si no está autenticado, redirige al login
+      navigate('/login');
     }
   }, [navigate]);
 
-  // Función para manejar el agregar usuario
   const handleAddUser = () => {
     if (!newUser.nombre || !newUser.correo) {
       setError('Todos los campos son obligatorios');
@@ -30,70 +28,66 @@ const Home = () => {
     setNewUser({ nombre: '', correo: '' });
   };
 
-  // Función para eliminar un usuario
   const handleDeleteUser = (userId) => {
     console.log('Eliminar usuario con id:', userId);
   };
 
-  // Función para editar un usuario
   const handleEditUser = (userId) => {
     console.log('Editar usuario con id:', userId);
   };
 
-  // Función para cerrar sesión
   const handleLogout = () => {
-    localStorage.removeItem('user'); // Eliminar el usuario del localStorage
-    navigate('/login'); // Redirigir al login
+    localStorage.removeItem('user');
+    navigate('/login');
   };
 
   return (
-    <div className="container mt-5">
-      <h4>Usuarios Registrados</h4>
+    <Container fluid className="mt-4">
+      <Row className="justify-content-center">
+        <Col xs={12} md={8} lg={6}>
+          <h4 className="text-center">Usuarios Registrados</h4>
 
-      {/* Botón de cerrar sesión */}
-      <Button variant="danger" onClick={handleLogout} className="mb-3">
-        Cerrar Sesión
-      </Button>
+          {/* Botón de cerrar sesión */}
+          <div className="d-flex justify-content-end">
+            <Button variant="danger" onClick={handleLogout} className="mb-3">
+              Cerrar Sesión
+            </Button>
+          </div>
 
-      {/* Lista de usuarios */}
-      {users && users.length > 0 ? (
-        <ListGroup>
-          {users.map((user) => (
-            <ListGroup.Item key={user.id} className="d-flex justify-content-between align-items-center">
-              <div>
-                <strong>{user.nombre}</strong> - {user.correo}
-              </div>
-              <div>
-                <Button
-                  variant="warning"
-                  className="me-2"
-                  onClick={() => handleEditUser(user.id)}
-                >
-                  Editar
-                </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => handleDeleteUser(user.id)}
-                >
-                  Eliminar
-                </Button>
-              </div>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      ) : (
-        <p>No hay usuarios disponibles.</p>
-      )}
+          {/* Lista de usuarios */}
+          {users && users.length > 0 ? (
+            <ListGroup>
+              {users.map((user) => (
+                <ListGroup.Item key={user.id} className="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                  <div className="text-center text-md-start">
+                    <strong>{user.nombre}</strong> - {user.correo}
+                  </div>
+                  <div className="mt-2 mt-md-0">
+                    <Button variant="warning" className="me-2 mb-1 mb-md-0" onClick={() => handleEditUser(user.id)}>
+                      Editar
+                    </Button>
+                    <Button variant="danger" onClick={() => handleDeleteUser(user.id)}>
+                      Eliminar
+                    </Button>
+                  </div>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          ) : (
+            <p className="text-center">No hay usuarios disponibles.</p>
+          )}
 
-      {/* Botón para agregar un nuevo usuario */}
-      <div className="mt-3">
-        <Button variant="success" onClick={() => setShowAddModal(true)}>
-          Agregar Usuario
-        </Button>
-      </div>
+          {/* Botón para agregar un nuevo usuario */}
+          <div className="mt-3 text-center">
+            <Button variant="success" onClick={() => setShowAddModal(true)}>
+              Agregar Usuario
+            </Button>
+          </div>
+        </Col>
+      </Row>
 
       {/* Modal para agregar un nuevo usuario */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Agregar Nuevo Usuario</Modal.Title>
         </Modal.Header>
@@ -118,13 +112,13 @@ const Home = () => {
               />
             </Form.Group>
             {error && <div className="text-danger mt-2">{error}</div>}
-            <Button variant="primary" className="mt-3" onClick={handleAddUser}>
+            <Button variant="primary" className="mt-3 w-100" onClick={handleAddUser}>
               Agregar Usuario
             </Button>
           </Form>
         </Modal.Body>
       </Modal>
-    </div>
+    </Container>
   );
 };
 

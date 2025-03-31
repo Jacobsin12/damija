@@ -47,9 +47,12 @@ const Home = () => {
         <Col xs={12} md={8} lg={6}>
           <h4 className="text-center">Usuarios Registrados</h4>
 
-          {/* Botón de cerrar sesión */}
-          <div className="d-flex justify-content-end">
-            <Button variant="danger" onClick={handleLogout} className="mb-3">
+          {/* Botones Agregar Usuario y Cerrar Sesión en la misma línea */}
+          <div className="d-flex justify-content-between mb-3">
+            <Button variant="success" onClick={() => setShowAddModal(true)}>
+              Agregar Usuario
+            </Button>
+            <Button variant="danger" onClick={handleLogout}>
               Cerrar Sesión
             </Button>
           </div>
@@ -76,13 +79,6 @@ const Home = () => {
           ) : (
             <p className="text-center">No hay usuarios disponibles.</p>
           )}
-
-          {/* Botón para agregar un nuevo usuario */}
-          <div className="d-flex justify-content-between flex-wrap mb-3r">
-            <Button variant="success" onClick={() => setShowAddModal(true)}>
-              Agregar Usuario
-            </Button>
-          </div>
         </Col>
       </Row>
 

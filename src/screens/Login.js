@@ -25,6 +25,9 @@ const Login = () => {
         throw new Error(data.message);
       }
 
+      // Guardar el estado de autenticación en el localStorage
+      localStorage.setItem('user', JSON.stringify(data.users[0])); // Suponiendo que data.users[0] es el usuario autenticado
+
       console.log('Usuarios:', data.users);
       navigate('/home', { state: { users: data.users } });
     } catch (error) {

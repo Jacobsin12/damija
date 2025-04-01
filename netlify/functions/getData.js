@@ -6,7 +6,7 @@ const connectToDatabase = async () => {
   if (!client) {
     client = new Client({
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
+      ssl: { rejectUnauthorized: true },
     });
     await client.connect();
   }

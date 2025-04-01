@@ -20,6 +20,30 @@ const Home = () => {
     }
   }, [navigate]);
 
+  const handleAddUser = async (newUser) => {
+    try {
+      const response = await fetch('/.netlify/functions/getData', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'registerUser',
+          email: newUser.correo,
+          password: newUser.contrasena,
+          name: newUser.nombre
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setUsers([...users, newUser]);
+      } else {
+        console.error(result.message);
+      }
+    } catch (error) {
+      console.error('Error al registrar usuario:', error);
+    }
+  };
+
   const handleEditUser = async (updatedUser) => {
     try {
       const response = await fetch('/.netlify/functions/getData', {
@@ -64,7 +88,7 @@ const Home = () => {
         </Col>
       </Row>
 
-      <ModalAgregar show={showAddModal} handleClose={() => setShowAddModal(false)} />
+      <ModalAgregar show={showAddModal} handleClose={() => setShowAddModal(false)} handleAdd={handleAddUser} />
       <ModalEditar show={showEditModal} handleClose={() => setShowEditModal(false)} user={selectedUser} handleEdit={handleEditUser} />
     </Container>
   );

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button, ListGroup, Modal, Form, Container, Row, Col } from 'react-bootstrap';
+import { Button, ListGroup, Container, Row, Col } from 'react-bootstrap';
+import ModalAgregar from './ModalAgregar';
+import ModalEditar from './ModalEditar';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -8,8 +10,8 @@ const Home = () => {
   const { users } = location.state || {}; // Recibir los usuarios desde el navigate
 
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newUser, setNewUser] = useState({ nombre: '', correo: '' });
-  const [error, setError] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -18,22 +20,13 @@ const Home = () => {
     }
   }, [navigate]);
 
-  const handleAddUser = () => {
-    if (!newUser.nombre || !newUser.correo) {
-      setError('Todos los campos son obligatorios');
-      return;
-    }
-    console.log('Nuevo usuario agregado:', newUser);
-    setShowAddModal(false);
-    setNewUser({ nombre: '', correo: '' });
-  };
-
   const handleDeleteUser = (userId) => {
     console.log('Eliminar usuario con id:', userId);
   };
 
-  const handleEditUser = (userId) => {
-    console.log('Editar usuario con id:', userId);
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setShowEditModal(true);
   };
 
   const handleLogout = () => {
@@ -66,7 +59,7 @@ const Home = () => {
                     <strong>{user.nombre}</strong> - {user.correo}
                   </div>
                   <div className="mt-2 mt-md-0">
-                    <Button variant="warning" className="me-2 mb-1 mb-md-0" onClick={() => handleEditUser(user.id)}>
+                    <Button variant="warning" className="me-2 mb-1 mb-md-0" onClick={() => handleEditUser(user)}>
                       Editar
                     </Button>
                     <Button variant="danger" onClick={() => handleDeleteUser(user.id)}>
@@ -82,38 +75,9 @@ const Home = () => {
         </Col>
       </Row>
 
-      {/* Modal para agregar un nuevo usuario */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Agregar Nuevo Usuario</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="formName">
-              <Form.Label>Nombre</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Ingrese el nombre"
-                value={newUser.nombre}
-                onChange={(e) => setNewUser({ ...newUser, nombre: e.target.value })}
-              />
-            </Form.Group>
-            <Form.Group controlId="formEmail" className="mt-3">
-              <Form.Label>Correo Electrónico</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Ingrese el correo electrónico"
-                value={newUser.correo}
-                onChange={(e) => setNewUser({ ...newUser, correo: e.target.value })}
-              />
-            </Form.Group>
-            {error && <div className="text-danger mt-2">{error}</div>}
-            <Button variant="primary" className="mt-3 w-100" onClick={handleAddUser}>
-              Agregar Usuario
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+      {/* Modales */}
+      <ModalAgregar show={showAddModal} handleClose={() => setShowAddModal(false)} />
+      <ModalEditar show={showEditModal} handleClose={() => setShowEditModal(false)} user={selectedUser} />
     </Container>
   );
 };

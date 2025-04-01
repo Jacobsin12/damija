@@ -1,4 +1,6 @@
 const { Client } = require('pg');
+const fs = require('fs');
+const path = require('path');
 
 let client;
 
@@ -6,7 +8,10 @@ const connectToDatabase = async () => {
   if (!client) {
     client = new Client({
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
+      ssl: {
+        rejectUnauthorized: false,
+        ca: fs.readFileSync(path.resolve(__dirname, 'config/certificates/2022371084.pem')), // Ruta relativa
+      },
     });
     await client.connect();
   }

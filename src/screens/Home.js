@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, ListGroup, Container, Row, Col } from 'react-bootstrap';
 import ModalAgregar from '../components/ModalAgregar';
-import ModalEditar from '../component/ModalEditar';
+import ModalEditar from '../components/ModalEditar';
 
 const Home = () => {
   const navigate = useNavigate();

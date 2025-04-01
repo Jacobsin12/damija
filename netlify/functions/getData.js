@@ -1,5 +1,4 @@
 const { Client } = require('pg');
-const fs = require('fs');  // Necesario para leer archivos
 
 let client;
 
@@ -7,10 +6,7 @@ const connectToDatabase = async () => {
   if (!client) {
     client = new Client({
       connectionString: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: true,  // Habilita la validación del certificado
-        ca: fs.readFileSync('C:/Program Files/OpenSSL-Win64/bin/2022371084.pem').toString(),  // Ruta a tu archivo .pem (certificado CA)
-      },
+      ssl: { rejectUnauthorized: false },
     });
     await client.connect();
   }

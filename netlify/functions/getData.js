@@ -10,7 +10,7 @@ const connectToDatabase = async () => {
       connectionString: process.env.DATABASE_URL,
       ssl: {
         rejectUnauthorized: false,
-        ca: fs.readFileSync(path.resolve(__dirname, 'certificates/2022371084.pem')),  // Ruta del certificado
+        ca: fs.readFileSync(path.join(__dirname, 'certificates', '2022371084.pem')), // Ruta ajustada para netlify
       },
     });
     await client.connect();

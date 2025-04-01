@@ -1,12 +1,15 @@
 const { Client } = require('pg');
 
+// Forzar el uso de certificados de autoridad
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1';
+
 let client;
 
 const connectToDatabase = async () => {
   if (!client) {
     client = new Client({
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: true },
+      ssl: { rejectUnauthorized: true }, // Asegura que se rechacen conexiones con certificados no válidos
     });
     await client.connect();
   }

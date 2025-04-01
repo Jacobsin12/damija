@@ -1,6 +1,4 @@
 const { Client } = require('pg');
-const fs = require('fs');
-const path = require('path');
 
 let client;
 
@@ -8,10 +6,7 @@ const connectToDatabase = async () => {
   if (!client) {
     client = new Client({
       connectionString: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false,
-        ca: fs.readFileSync(path.join(__dirname, 'certificates', '2022371084.pem')), // Ruta ajustada para netlify
-      },
+      ssl: { rejectUnauthorized: false },
     });
     await client.connect();
   }

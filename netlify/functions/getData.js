@@ -10,7 +10,7 @@ const connectToDatabase = async () => {
       connectionString: process.env.DATABASE_URL,
       ssl: {
         rejectUnauthorized: false,
-        ca: fs.readFileSync(path.resolve(__dirname, 'config/certificates/2022371084.pem')), // Ruta relativa
+        ca: fs.readFileSync(path.resolve(__dirname, 'certificates/2022371084.pem')),  // Ruta del certificado
       },
     });
     await client.connect();

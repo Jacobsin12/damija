@@ -8,7 +8,9 @@ const Navbar = () => {
         <img src="/uteq.png" alt="UTEQ Logo" style={styles.logo} />
       </div>
       <ul style={styles.navLinks}>
-    
+        <li><Link to="/" style={styles.link}></Link></li>
+        <li><Link to="/about" style={styles.link}></Link></li>
+        <li><Link to="/contact" style={styles.link}></Link></li>
       </ul>
     </nav>
   );

@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ModalRegister from '../components/ModalRegister'; // Importar el componente ModalRegister
+import ModalRegister from '../components/ModalRegister';
+import { Modal, Button } from 'react-bootstrap'; // Importar Bootstrap Modal
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [showRegisterModal, setShowRegisterModal] = useState(false); // Estado para mostrar el modal de registro
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false); // Estado para mostrar el modal de error
   const navigate = useNavigate();
+
+  const isValidEmail = (email) => {
+    return /^[a-zA-Z0-9._%+-]+@damija\.com$/.test(email);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!isValidEmail(email)) {
+      setError('El correo debe pertenecer al dominio @damija.com');
+      setShowErrorModal(true);
+      return;
+    }
 
     try {
       const response = await fetch('/.netlify/functions/getData', {
@@ -25,21 +37,16 @@ const Login = () => {
         throw new Error(data.message);
       }
 
-      // Guardar el estado de autenticación en el localStorage
-      localStorage.setItem('user', JSON.stringify(data.users[0])); // Suponiendo que data.users[0] es el usuario autenticado
-
-      console.log('Usuarios:', data.users);
+      localStorage.setItem('user', JSON.stringify(data.users[0]));
       navigate('/home', { state: { users: data.users } });
     } catch (error) {
       setError(error.message);
-      console.error(error);
+      setShowErrorModal(true);
     }
   };
 
   const handleRegister = (user) => {
-    // Puedes redirigir o actualizar el estado si es necesario
     console.log('Usuario registrado:', user);
-    // Aquí puedes agregar lógica después de que el usuario se registre exitosamente
   };
 
   return (
@@ -75,13 +82,9 @@ const Login = () => {
                   />
                 </div>
                 <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
-                {error && <div className="mt-3 text-danger">{error}</div>}
               </form>
               <div className="mt-3 text-center">
-                <button
-                  className="btn btn-link"
-                  onClick={() => setShowRegisterModal(true)} // Mostrar el modal de registro
-                >
+                <button className="btn btn-link" onClick={() => setShowRegisterModal(true)}>
                   ¿No tienes una cuenta? Regístrate aquí
                 </button>
               </div>
@@ -93,9 +96,22 @@ const Login = () => {
       {/* Modal de registro */}
       <ModalRegister
         showModal={showRegisterModal}
-        handleClose={() => setShowRegisterModal(false)} // Cerrar el modal
-        handleRegister={handleRegister} // Manejar el registro
+        handleClose={() => setShowRegisterModal(false)}
+        handleRegister={handleRegister}
       />
+
+      {/* Modal de error */}
+      <Modal show={showErrorModal} onHide={() => setShowErrorModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{error}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={() => setShowErrorModal(false)}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

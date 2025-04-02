@@ -12,14 +12,14 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
 
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validateEmail = (email) => /.+@damija\.com$/.test(email);
 
   const validatePassword = (password) => {
     const strength =
       (password.length >= 8) +
       /[A-Z]/.test(password) +
       /\d/.test(password) +
-      /[^\w]/.test(password); 
+      /[^\w]/.test(password);
     setPasswordStrength(strength * 25);
     return strength === 4;
   };
@@ -33,7 +33,7 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
       return;
     }
     if (!validateEmail(email)) {
-      setError('Ingrese un correo electrónico válido');
+      setError('El correo debe pertenecer al dominio @damija.com');
       return;
     }
     if (!validatePassword(password)) {

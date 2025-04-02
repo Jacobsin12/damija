@@ -25,7 +25,7 @@ const styles = {
     backgroundColor: "#004080",
   },
   logoContainer: {
-    height: "50px",
+    height: "100px",
   },
   logo: {
     height: "100px",

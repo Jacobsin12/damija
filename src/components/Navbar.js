@@ -28,7 +28,7 @@ const styles = {
     height: "50px",
   },
   logo: {
-    height: "50px",
+    height: "100px",
   },
   navLinks: {
     listStyle: "none",

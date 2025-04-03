@@ -19,7 +19,7 @@ const Login = () => {
     e.preventDefault();
     
     if (!isValidEmail(email)) {
-      setError('El correo debe pertenecer al dominio @damija.com');
+      setError('El correo debe pertenecer al dominio asociado');
       setShowErrorModal(true);
       return;
     }

@@ -61,6 +61,25 @@ const Home = () => {
     }
   };
 
+  const handleDeleteUser = async (userId) => {
+    try {
+      const response = await fetch('/.netlify/functions/getData', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'deleteUser', userId }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setUsers(users.filter(user => user.id !== userId));
+      } else {
+        console.error(result.message);
+      }
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error);
+    }
+  };
+
   return (
     <>
       <Navbar /> {/* Se muestra el Navbar en la parte superior */}
@@ -81,6 +100,7 @@ const Home = () => {
                     <div className="text-center text-md-start"><strong>{user.nombre}</strong> - {user.correo}</div>
                     <div className="mt-2 mt-md-0">
                       <Button variant="warning" className="me-2 mb-1 mb-md-0" onClick={() => { setSelectedUser(user); setShowEditModal(true); }}>Editar</Button>
+                      <Button variant="danger" onClick={() => handleDeleteUser(user.id)}>Eliminar</Button>
                     </div>
                   </ListGroup.Item>
                 ))}

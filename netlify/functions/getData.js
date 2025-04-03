@@ -43,6 +43,16 @@ exports.handler = async function (event) {
       return { statusCode: 200, body: JSON.stringify({ success: true, message: 'Usuario actualizado correctamente' }) };
     }
 
+    if (action === 'deleteUser') {
+      if (!userId) {
+        return { statusCode: 400, body: JSON.stringify({ success: false, message: 'ID de usuario requerido' }) };
+      }
+
+      await client.query('DELETE FROM usuarios WHERE id = $1', [userId]);
+
+      return { statusCode: 200, body: JSON.stringify({ success: true, message: 'Usuario eliminado correctamente' }) };
+    }
+
     const result = await client.query('SELECT * FROM usuarios WHERE correo = $1 AND contrasena = $2', [email, password]);
 
     if (result.rows.length > 0) {

@@ -24,6 +24,13 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
     return strength === 4;
   };
 
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    if (/^[A-Za-zÀ-ÿ\s]*$/.test(value)) {
+      setName(value);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -70,7 +77,12 @@ const ModalRegister = ({ showModal, handleClose, handleRegister }) => {
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="formName">
             <Form.Label>Nombre</Form.Label>
-            <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+            <Form.Control
+              type="text"
+              value={name}
+              onChange={handleNameChange}
+              required
+            />
           </Form.Group>
           <Form.Group controlId="formEmail">
             <Form.Label>Correo Electrónico</Form.Label>
